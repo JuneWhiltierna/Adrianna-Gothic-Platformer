@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Bonus
+  - FallLevel
+  - Key
+  - Enemy
+  - Heart
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Ground
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 43378835
+    locked: 0
+  - name: Tilemap
+    uniqueID: 1172914025
+    locked: 0
+  - name: Platforms
+    uniqueID: 4259941531
+    locked: 0
+  - name: Buildings
+    uniqueID: 2315842331
+    locked: 0
+  - name: Props
+    uniqueID: 1426545603
+    locked: 0
+  - name: Road Signs
+    uniqueID: 2243913057
+    locked: 0
+  - name: Player and Enemies
+    uniqueID: 2305696321
+    locked: 0
+  - name: Foreground
+    uniqueID: 1196767341
+    locked: 0
