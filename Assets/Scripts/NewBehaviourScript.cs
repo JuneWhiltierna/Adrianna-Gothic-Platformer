@@ -6,15 +6,12 @@ using UnityEngine;
 public class NewBehaviourScript : MonoBehaviour
 
 {
-    [Header("Movement parameters")]
-
-    [Range(0.01f, 50.0f)][SerializeField] private float moveSpeed = 5f; //moving speed of the player
+    [Header("Movement parameters")] [Range(0.01f, 50.0f)] [SerializeField]
+    private float moveSpeed = 5f; //moving speed of the player
 
     [SerializeField] private float jumpForce = 6.0f;
 
-    [Space(10)]
-
-    [SerializeField] private Rigidbody2D rigidbody;
+    [Space(10)] [SerializeField] private Rigidbody2D rigidbody;
 
     [SerializeField] private Animator animator;
 
@@ -44,15 +41,14 @@ public class NewBehaviourScript : MonoBehaviour
 
     bool IsGrounded()
     {
-        Debug.Log(rayLength);
-        return Physics2D.Raycast(this.transform.position, Vector2.down, rayLength, groundLayer.value);
+        return Physics2D.Raycast(transform.position, Vector2.down, rayLength, groundLayer.value);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-
     }
+
     void Jump()
     {
         if (IsGrounded())
@@ -79,53 +75,58 @@ public class NewBehaviourScript : MonoBehaviour
             Debug.Log("Score: " + score);
             other.gameObject.SetActive(false);
         }
-        // Sprawdzenie, czy kolizja nast¹pi³a z obiektem przeciwnika
+
+        // Sprawdzenie, czy kolizja nastï¿½piï¿½a z obiektem przeciwnika
         if (other.gameObject.CompareTag("Enemy"))
         {
-            // Sprawdzenie po³o¿enia gracza w chwili kolizji
+            // Sprawdzenie poï¿½oï¿½enia gracza w chwili kolizji
             if (transform.position.y > other.gameObject.transform.position.y)
             {
-                // Zwiêkszenie liczby zdobytych punktów i wypisanie komunikatu o œmierci przeciwnika
+                // Zwiï¿½kszenie liczby zdobytych punktï¿½w i wypisanie komunikatu o ï¿½mierci przeciwnika
                 score += 10;
                 Debug.Log("Killed an enemy");
             }
             else
             {
-                // Zmniejszenie liczby ¿yæ i sprawdzenie, czy gra siê skoñczy³a
+                // Zmniejszenie liczby ï¿½yï¿½ i sprawdzenie, czy gra siï¿½ skoï¿½czyï¿½a
                 lives--;
                 if (lives <= 0)
                 {
-                    // Wypisanie komunikatu o koñcu gry
+                    // Wypisanie komunikatu o koï¿½cu gry
                     Debug.Log("Game over");
                 }
                 else
                 {
-                    // Wypisanie liczby ¿yæ i zresetowanie pozycji gracza
+                    // Wypisanie liczby ï¿½yï¿½ i zresetowanie pozycji gracza
                     Debug.Log("Lives left: " + lives);
                     transform.position = new Vector3(0, 0, 0);
                 }
             }
         }
+
         if (other.gameObject.CompareTag("Key"))
         {
             Debug.Log("Keys: " + keysFound);
             other.gameObject.SetActive(false);
         }
+
         if (other.CompareTag("Heart"))
         {
             lives++;
             Debug.Log("Lives: " + lives);
             other.gameObject.SetActive(false);
         }
+
         if (other.gameObject.CompareTag("FallLevel"))
         {
-
         }
+
         if (other.CompareTag("MovingPlatform"))
         {
             transform.SetParent(other.transform);
         }
     }
+
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("MovingPlatform"))
@@ -133,6 +134,7 @@ public class NewBehaviourScript : MonoBehaviour
             transform.SetParent(null);
         }
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -150,19 +152,21 @@ public class NewBehaviourScript : MonoBehaviour
 
                 Flip();
             }
-        };
+        }
 
         if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
         {
             transform.Translate(-moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
             isWalking = true;
 
-            if (isFacingRight == true)
+            if (isFacingRight)
             {
                 Debug.Log("flipR");
                 Flip();
             }
-        };
+        }
+
+        ;
 
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
         {

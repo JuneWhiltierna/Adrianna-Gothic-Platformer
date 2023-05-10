@@ -9,6 +9,7 @@ TagManager:
   - Key
   - Enemy
   - Heart
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
+  - Platform
   - 
   - 
   - 
@@ -57,6 +58,9 @@ TagManager:
     locked: 0
   - name: Buildings
     uniqueID: 2315842331
+    locked: 0
+  - name: Platforms Front
+    uniqueID: 1679643431
     locked: 0
   - name: Props
     uniqueID: 1426545603

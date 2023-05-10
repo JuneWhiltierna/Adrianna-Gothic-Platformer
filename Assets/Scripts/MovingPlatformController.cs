@@ -7,7 +7,6 @@ public class MovingPlatformController : MonoBehaviour
     [Range(0.01f, 50.0f)][SerializeField] private float moveSpeed = 5f; //moving speed of the enemy
     [SerializeField] private float startPositionX;
     [SerializeField] private float moveRange = 3.0f;
-    [SerializeField] private bool movingRight;
     [SerializeField] private bool isFacingRight = true;
 
 
@@ -17,7 +16,7 @@ public class MovingPlatformController : MonoBehaviour
         //rigidbody = GetComponent<Rigidbody2D>();
 
         //animator = GetComponent<Animator>();
-        startPositionX = this.transform.position.x;
+        startPositionX = transform.position.x;
     }
     // Start is called before the first frame update
     void Start()
@@ -36,9 +35,6 @@ public class MovingPlatformController : MonoBehaviour
     private void Flip()
     {
         isFacingRight = !isFacingRight;
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
     }
     // Update is called once per frame
     void Update()
@@ -47,28 +43,28 @@ public class MovingPlatformController : MonoBehaviour
             // Sprawdzenie kierunku ruchu przeciwnika
             if (isFacingRight)
             {
-                // Poruszanie siê w prawo, jeœli nie przekroczono granicy
+                // Poruszanie siï¿½ w prawo, jeï¿½li nie przekroczono granicy
                 if (transform.position.x < startPositionX + moveRange)
                 {
                     MoveRight();
                 }
                 else
                 {
-                    // Zmiana kierunku ruchu i poruszanie siê w lewo
+                    // Zmiana kierunku ruchu i poruszanie siï¿½ w lewo
                     Flip();
                     MoveLeft();
                 }
             }
             else
             {
-                // Poruszanie siê w lewo, jeœli nie przekroczono granicy
+                // Poruszanie siï¿½ w lewo, jeï¿½li nie przekroczono granicy
                 if (transform.position.x > startPositionX - moveRange)
                 {
                     MoveLeft();
                 }
                 else
                 {
-                    // Zmiana kierunku ruchu i poruszanie siê w prawo
+                    // Zmiana kierunku ruchu i poruszanie siï¿½ w prawo
                     Flip();
                     MoveRight();
                 }
