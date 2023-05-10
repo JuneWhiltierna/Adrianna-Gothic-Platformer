@@ -85,6 +85,7 @@ public class NewBehaviourScript : MonoBehaviour
                 // Zwi�kszenie liczby zdobytych punkt�w i wypisanie komunikatu o �mierci przeciwnika
                 score += 10;
                 Debug.Log("Killed an enemy");
+                rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             }
             else
             {
