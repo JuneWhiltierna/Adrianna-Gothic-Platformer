@@ -40,7 +40,7 @@ public class MovingPlatformController : MonoBehaviour
     void Update()
     {
         {
-            // Sprawdzenie kierunku ruchu przeciwnika
+            // Sprawdzenie kierunku ruchu 
             if (isFacingRight)
             {
                 // Poruszanie si� w prawo, je�li nie przekroczono granicy
