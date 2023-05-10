@@ -36,6 +36,5 @@ public class WaypointFollower : MonoBehaviour
             currentWaypoint = (currentWaypoint + 1) % waypoints.Length;
         }
 
-        Vector2.MoveTowards(targetPosition, targetPosition, speed * Time.deltaTime);
     }
 }
