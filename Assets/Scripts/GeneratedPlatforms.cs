@@ -5,14 +5,14 @@ using UnityEngine;
 public class GeneratedPlatforms : MonoBehaviour
 {
     [SerializeField] private GameObject platformsPrefab;
-    [SerializeField] private float speed = 1.0f;
+    [SerializeField] private float speed = 0.0f;
     [SerializeField] private float moveRange = 3.0f;
     private int PLATFORM_NUM = 20;
-    private float radius = 5f;
+    private float radius = 10f;
     private GameObject[] platforms;
     private Vector3[] positions;
     private float angle;
-    public float rotationSpeed = 2f;
+    public float rotationSpeed = 4f;
     private bool movementEnabled = true;
 
     // Start is called before the first frame update

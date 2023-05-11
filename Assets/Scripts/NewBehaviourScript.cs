@@ -48,7 +48,100 @@ public class NewBehaviourScript : MonoBehaviour
     void Start()
     {
     }
+    // Update is called once per frame
+    void Update()
+    {
+        if (GameManager.Instance.currentGameState == GameState.GAME)
+        {
+            UpdateInternal();
 
+            //    isWalking = false;
+
+            //    if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            //    {
+            //        transform.Translate(moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
+
+            //        isWalking = true;
+
+            //        if (isFacingRight == false)
+            //        {
+            //            Debug.Log("flipL");
+
+            //            Flip();
+            //        }
+            //    }
+
+            //    if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            //    {
+            //        transform.Translate(-moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
+            //        isWalking = true;
+
+            //        if (isFacingRight)
+            //        {
+            //            Debug.Log("flipR");
+            //            Flip();
+            //        }
+            //    }
+
+            //;
+
+            //    if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+            //    {
+            //        Debug.Log("jump");
+            //        Jump();
+            //    }
+
+            //    //Debug.DrawRay(transform.position, rayLength * Vector3.down, Color.white, 1, false);
+
+            //    animator.SetBool("isGrounded", IsGrounded());
+
+            //    animator.SetBool("isWalking", isWalking);
+        }
+    }
+    private void UpdateInternal()
+    {
+        isWalking = false;
+
+        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+        {
+            transform.Translate(moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
+
+            isWalking = true;
+
+            if (isFacingRight == false)
+            {
+                Debug.Log("flipL");
+
+                Flip();
+            }
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+        {
+            transform.Translate(-moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
+            isWalking = true;
+
+            if (isFacingRight)
+            {
+                Debug.Log("flipR");
+                Flip();
+            }
+        }
+
+        ;
+
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("jump");
+            Jump();
+        }
+
+        //Debug.DrawRay(transform.position, rayLength * Vector3.down, Color.white, 1, false);
+
+        animator.SetBool("isGrounded", IsGrounded());
+
+        animator.SetBool("isWalking", isWalking);
+    }
     void Jump()
     {
         if (IsGrounded())
@@ -136,49 +229,5 @@ public class NewBehaviourScript : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        isWalking = false;
-
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
-        {
-            transform.Translate(moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
-
-            isWalking = true;
-
-            if (isFacingRight == false)
-            {
-                Debug.Log("flipL");
-
-                Flip();
-            }
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
-        {
-            transform.Translate(-moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
-            isWalking = true;
-
-            if (isFacingRight)
-            {
-                Debug.Log("flipR");
-                Flip();
-            }
-        }
-
-        ;
-
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("jump");
-            Jump();
-        }
-
-        //Debug.DrawRay(transform.position, rayLength * Vector3.down, Color.white, 1, false);
-
-        animator.SetBool("isGrounded", IsGrounded());
-
-        animator.SetBool("isWalking", isWalking);
-    }
+ 
 }
