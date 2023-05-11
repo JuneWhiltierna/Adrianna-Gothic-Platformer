@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class TriggerObject : MonoBehaviour
 {
-    //public PlatformManager platformManager;
+    public GeneratedPlatforms platformManager;
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.CompareTag("Player"))
-    //    {
-    //        platformManager.EnableMovement();
-    //    }
-    //}
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            platformManager.EnableMovement();
+        }
+    }
 
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    if (collision.CompareTag("Player"))
-    //    {
-    //        platformManager.DisableMovement();
-    //    }
-    //}
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            platformManager.DisableMovement();
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {

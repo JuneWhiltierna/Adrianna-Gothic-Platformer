@@ -13,34 +13,41 @@ public class GeneratedPlatforms : MonoBehaviour
     private Vector3[] positions;
     private float angle;
     public float rotationSpeed = 2f;
+    private bool movementEnabled = true;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        // Przechwyæ i zainicjalizuj platformy
+        platforms = GameObject.FindGameObjectsWithTag("TriggeredPlatform");
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Zmiana k¹ta dla rotacji
-        angle += rotationSpeed * Time.deltaTime;
-
-        for (int i = 0; i < platforms.Length; i++)
+        if (movementEnabled)
         {
-            // Oblicz k¹t dla i-tej platformy
-            float angleIncrement = 360f / PLATFORM_NUM;
-            float currentAngle = angle + (i * angleIncrement);
+            // Zmiana k¹ta dla rotacji
+            angle += rotationSpeed * Time.deltaTime;
 
-            // Konwertuj k¹t na radiany
-            float radianAngle = currentAngle * Mathf.Deg2Rad;
+            for (int i = 0; i < platforms.Length; i++)
+            {
+                // Oblicz k¹t dla i-tej platformy
+                float angleIncrement = 360f / PLATFORM_NUM;
+                float currentAngle = angle + (i * angleIncrement);
 
-            // Oblicz pozycjê platformy na podstawie równania parametrycznego okrêgu
-            float x = radius * Mathf.Cos(radianAngle);
-            float y = radius * Mathf.Sin(radianAngle);
-            Vector3 targetPosition = new Vector3(x + transform.position.x, y + transform.position.y, 0);
+                // Konwertuj k¹t na radiany
+                float radianAngle = currentAngle * Mathf.Deg2Rad;
 
-            // Porusz platform¹ w kierunku punktu docelowego
-            platforms[i].transform.position = Vector3.MoveTowards(platforms[i].transform.position, targetPosition, rotationSpeed * Time.deltaTime);
+                // Oblicz pozycjê platformy na podstawie równania parametrycznego okrêgu
+                float x = radius * Mathf.Cos(radianAngle);
+                float y = radius * Mathf.Sin(radianAngle);
+                Vector3 targetPosition = new Vector3(x + transform.position.x, y + transform.position.y, 0);
+
+                // Porusz platform¹ w kierunku punktu docelowego
+                platforms[i].transform.position = Vector3.MoveTowards(platforms[i].transform.position, targetPosition, rotationSpeed * Time.deltaTime);
+
+            }
         }
     }
     private void Awake()
@@ -64,8 +71,16 @@ public class GeneratedPlatforms : MonoBehaviour
             platforms[i] = Instantiate(platformsPrefab, positions[i], Quaternion.identity);
             platforms[i].transform.parent = transform;
 
-
         }
 
+    }
+    public void EnableMovement()
+    {
+        movementEnabled = true;
+    }
+
+    public void DisableMovement()
+    {
+        movementEnabled = false;
     }
 }
