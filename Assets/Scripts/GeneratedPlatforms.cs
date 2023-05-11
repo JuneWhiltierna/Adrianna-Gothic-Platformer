@@ -11,6 +11,8 @@ public class GeneratedPlatforms : MonoBehaviour
     private float radius = 5f;
     private GameObject[] platforms;
     private Vector3[] positions;
+    private float angle;
+    public float rotationSpeed = 2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,10 +22,26 @@ public class GeneratedPlatforms : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (transform.position.y < positions[0].y + moveRange) 
-        //{
+        // Zmiana k¹ta dla rotacji
+        angle += rotationSpeed * Time.deltaTime;
 
-        //}
+        for (int i = 0; i < platforms.Length; i++)
+        {
+            // Oblicz k¹t dla i-tej platformy
+            float angleIncrement = 360f / PLATFORM_NUM;
+            float currentAngle = angle + (i * angleIncrement);
+
+            // Konwertuj k¹t na radiany
+            float radianAngle = currentAngle * Mathf.Deg2Rad;
+
+            // Oblicz pozycjê platformy na podstawie równania parametrycznego okrêgu
+            float x = radius * Mathf.Cos(radianAngle);
+            float y = radius * Mathf.Sin(radianAngle);
+            Vector3 targetPosition = new Vector3(x + transform.position.x, y + transform.position.y, 0);
+
+            // Porusz platform¹ w kierunku punktu docelowego
+            platforms[i].transform.position = Vector3.MoveTowards(platforms[i].transform.position, targetPosition, rotationSpeed * Time.deltaTime);
+        }
     }
     private void Awake()
     {
@@ -33,10 +51,11 @@ public class GeneratedPlatforms : MonoBehaviour
         for(int i = 0; i < platforms.Length; i++)
         {
             // Oblicz k¹t dla i-tej platformy
-            float angle = i * (360f / PLATFORM_NUM);
+            float angleIncrement = 360f / PLATFORM_NUM;
+            float currentAngle = angle + (i * angleIncrement);
 
             // Konwertuj k¹t na radiany
-            float radianAngle = angle * Mathf.Deg2Rad;
+            float radianAngle = currentAngle * Mathf.Deg2Rad;
 
             // Oblicz pozycjê platformy na podstawie równania parametrycznego okrêgu
             float x = radius * Mathf.Cos(radianAngle);
@@ -45,6 +64,8 @@ public class GeneratedPlatforms : MonoBehaviour
             platforms[i] = Instantiate(platformsPrefab, positions[i], Quaternion.identity);
             platforms[i].transform.parent = transform;
 
+
         }
+
     }
 }
