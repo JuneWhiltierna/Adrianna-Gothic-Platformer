@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public enum GameState
 {
@@ -11,6 +14,7 @@ public enum GameState
     [InspectorName("Pause")] PAUSE_MENU,
     [InspectorName("Level completed")] LEVEL_COMPLETED
 }
+
 public class GameManager : MonoBehaviour
 {
     private int score = 0;
@@ -21,25 +25,19 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
 
-    public  GameState currentGameState = GameState.GAME;
+    public GameState currentGameState = GameState.GAME;
 
     public Canvas InGameCanvas;
-    public Canvas PausedCanvas;
     public Canvas GameOverCanvas;
+    public Canvas pauseMenuCanvas;
     public TMP_Text scoreText;
     public TMP_Text keysFoundText;
     public TMP_Text enemiesText;
     public TMP_Text levelCompletedText;
     public TMP_Text gameOverText;
     public TMP_Text gamePausedText;
-    public Image[] keyTab;
+    [FormerlySerializedAs("keyTab")] public Image[] keyTabs;
     public Image[] hearts;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     private void Awake()
     {
@@ -50,15 +48,19 @@ public class GameManager : MonoBehaviour
         SetDefaultKeysFound();
         SetDefaultEnemies();
         SetDefaultHearts();
+        pauseMenuCanvas.enabled = false;
 
-        keyTab[3].color = Color.gray;
+        foreach (var keytab in keyTabs)
+        {
+            keytab.color = Color.gray;
+        }
     }
-    // Update is called once per frame
+
     private void Update()
     {
         OnEscapeKey();
-    }   
-       
+    }
+
     private void OnEscapeKey()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -66,14 +68,12 @@ public class GameManager : MonoBehaviour
             switch (currentGameState)
             {
                 case GameState.PAUSE_MENU:
-                    Debug.Log("InGame");
                     InGame();
-                    //gamePausedText.enabled = false;
                     break;
                 case GameState.GAME:
-                    Debug.Log("Pause");
                     PauseMenu();
-                    //gamePausedText.enabled = true;
+                    break;
+                case GameState.LEVEL_COMPLETED:
                     break;
                 default:
                     InGame();
@@ -81,27 +81,42 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
     private void SetDefaultCanvas()
-    => SetCanvas(currentGameState);
+    {
+        SetCanvas(currentGameState);
+    }
 
     private void SetDefaultScore()
-    => scoreText.text = score.ToString();
+    {
+        scoreText.text = score.ToString();
+    }
 
     private void SetDefaultKeysFound()
-    => keysFoundText.text = keysFound.ToString();
+    {
+        keysFoundText.text = keysFound.ToString();
+    }
 
     private void SetDefaultHearts()
-    => hearts[lives].enabled = false;
+    {
+        foreach (var heart in hearts)
+        {
+            heart.enabled = true;
+        }
+    }
 
     private void SetDefaultEnemies()
-    => enemiesText.text = enemiesDefeated.ToString();
+    {
+        // enemiesText.text = enemiesDefeated.ToString();
+    }
 
     private void SetDefaultTexts()
     {
         //levelCompletedText.enabled = false;
-        gameOverText.enabled = false;
-        gamePausedText.enabled = true;
+        // gameOverText.enabled = false;
+        // gamePausedText.enabled = true;
     }
+
     private void ProvideInstance()
     {
         switch (Instance)
@@ -114,7 +129,8 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
-    void SetGameState(GameState newGameState)
+
+    private void SetGameState(GameState newGameState)
     {
         currentGameState = newGameState;
         SetCanvas(newGameState);
@@ -123,21 +139,29 @@ public class GameManager : MonoBehaviour
     private void SetCanvas(GameState newGameState)
     {
         InGameCanvas.enabled = newGameState == GameState.GAME;
-        PausedCanvas.enabled = newGameState == GameState.PAUSE_MENU;
+        pauseMenuCanvas.enabled = newGameState == GameState.PAUSE_MENU;
         GameOverCanvas.enabled = newGameState == GameState.LEVEL_COMPLETED;
     }
 
-    void PauseMenu()
-        => SetGameState(GameState.PAUSE_MENU);
+    private void PauseMenu()
+    {
+        SetGameState(GameState.PAUSE_MENU);
+    }
 
-    void InGame()
-        => SetGameState(GameState.GAME);
+    public void InGame()
+    {
+        SetGameState(GameState.GAME);
+    }
 
-    void LevelCompleted()
-        => SetGameState(GameState.LEVEL_COMPLETED);
+    private void LevelCompleted()
+    {
+        SetGameState(GameState.LEVEL_COMPLETED);
+    }
 
-    void GameOver()
-        => SetGameState(GameState.LEVEL_COMPLETED);
+    private void GameOver()
+    {
+        SetGameState(GameState.LEVEL_COMPLETED);
+    }
 
     public void AddPoints(int points)
     {
@@ -145,7 +169,7 @@ public class GameManager : MonoBehaviour
         scoreText.text = score.ToString();
     }
 
-    public void AddKeys(int keys) 
+    public void AddKeys(int keys)
     {
         keysFound += keys;
         keysFoundText.text = keysFound.ToString();
@@ -153,19 +177,18 @@ public class GameManager : MonoBehaviour
 
     public void AddHeart()
     {
-        //hearts[lives].enabled = true;
-        //lives++;
+        lives++;
+        hearts[lives - 1].enabled = true;
     }
 
     public void RemoveHeart()
     {
-        hearts[lives - 1].enabled = false;
         lives--;
-
+        hearts[lives].enabled = false;
         if (lives == 0)
         {
             GameOver();
-            gameOverText.enabled = true;
+            // gameOverText.enabled = true;
         }
     }
 
@@ -174,7 +197,17 @@ public class GameManager : MonoBehaviour
         if (keysFound >= 3)
         {
             LevelCompleted();
-            levelCompletedText.enabled = true;
+            // levelCompletedText.enabled = true;
         }
+    }
+
+    public void OnRestartButtonClicked()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    
+    public void OnExitButtonClicked()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }
