@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NewBehaviourScript : MonoBehaviour
 
@@ -25,10 +26,13 @@ public class NewBehaviourScript : MonoBehaviour
 
     [SerializeField] private int score = 0;
 
+
     [SerializeField] private int lives = 3;
     [SerializeField] private Vector2 startPosition;
     [SerializeField] private int keysFound = 0;
     [SerializeField] private int keysNumber = 3;
+
+    private Vector3 pausePosition;
 
     private void Awake()
     {
@@ -54,48 +58,14 @@ public class NewBehaviourScript : MonoBehaviour
         if (GameManager.Instance.currentGameState == GameState.GAME)
         {
             UpdateInternal();
+            pausePosition = transform.position;
+            animator.speed = 1;
 
-            //    isWalking = false;
-
-            //    if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
-            //    {
-            //        transform.Translate(moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
-
-            //        isWalking = true;
-
-            //        if (isFacingRight == false)
-            //        {
-            //            Debug.Log("flipL");
-
-            //            Flip();
-            //        }
-            //    }
-
-            //    if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
-            //    {
-            //        transform.Translate(-moveSpeed * Time.deltaTime, 0.0f, 0.0f, Space.World);
-            //        isWalking = true;
-
-            //        if (isFacingRight)
-            //        {
-            //            Debug.Log("flipR");
-            //            Flip();
-            //        }
-            //    }
-
-            //;
-
-            //    if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-            //    {
-            //        Debug.Log("jump");
-            //        Jump();
-            //    }
-
-            //    //Debug.DrawRay(transform.position, rayLength * Vector3.down, Color.white, 1, false);
-
-            //    animator.SetBool("isGrounded", IsGrounded());
-
-            //    animator.SetBool("isWalking", isWalking);
+        }
+        else
+        {
+            transform.position = pausePosition;
+            animator.speed = 0;
         }
     }
     private void UpdateInternal()
@@ -110,8 +80,6 @@ public class NewBehaviourScript : MonoBehaviour
 
             if (isFacingRight == false)
             {
-                Debug.Log("flipL");
-
                 Flip();
             }
         }
@@ -123,16 +91,12 @@ public class NewBehaviourScript : MonoBehaviour
 
             if (isFacingRight)
             {
-                Debug.Log("flipR");
                 Flip();
             }
         }
 
-        ;
-
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Debug.Log("jump");
             Jump();
         }
 
@@ -148,8 +112,6 @@ public class NewBehaviourScript : MonoBehaviour
         {
             rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
-
-        Debug.Log("jumping");
     }
 
     private void Flip()
@@ -165,7 +127,8 @@ public class NewBehaviourScript : MonoBehaviour
         if (other.CompareTag("Bonus"))
         {
             score++;
-            Debug.Log("Score: " + score);
+
+            GameManager.Instance.AddPoints(1);
             other.gameObject.SetActive(false);
         }
 
@@ -200,14 +163,15 @@ public class NewBehaviourScript : MonoBehaviour
 
         if (other.gameObject.CompareTag("Key"))
         {
-            Debug.Log("Keys: " + keysFound);
+            keysFound++;
+            GameManager.Instance.AddKeys(1);
             other.gameObject.SetActive(false);
         }
 
         if (other.CompareTag("Heart"))
         {
             lives++;
-            Debug.Log("Lives: " + lives);
+            GameManager.Instance.AddHeart();
             other.gameObject.SetActive(false);
         }
 
