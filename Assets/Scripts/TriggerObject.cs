@@ -8,28 +8,11 @@ public class TriggerObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
-        {
-            platformManager.EnableMovement();
-        }
+        if (collision.CompareTag("Player")) platformManager.EnableMovement();
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
-        {
-            platformManager.DisableMovement();
-        }
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (collision.CompareTag("Player")) platformManager.DisableMovement();
     }
 }
