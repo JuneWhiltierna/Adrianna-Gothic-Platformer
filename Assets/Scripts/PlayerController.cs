@@ -1,46 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class NewBehaviourScript : MonoBehaviour
+public class PlayerController : MonoBehaviour
 
 {
     [Header("Movement parameters")] [Range(0.01f, 50.0f)] [SerializeField]
-    private float moveSpeed = 5f; //moving speed of the player
+    private float moveSpeed = 5f;
+    private float rayLength = 2f;
+    private AudioSource source;
+    private bool playStep = true;
+
 
     [SerializeField] private float jumpForce = 6.0f;
-
     [Space(10)] [SerializeField] private Rigidbody2D rigidbody;
-
     [SerializeField] private Animator animator;
-
-    public LayerMask groundLayer;
-
-    private float rayLength = 2f;
-
+    [SerializeField] private LayerMask groundLayer;
     [SerializeField] private bool isWalking = false;
-
     [SerializeField] private bool isFacingRight = true;
-
-    [SerializeField] private int score = 0;
-
-
     [SerializeField] private int lives = 3;
     [SerializeField] private Vector2 startPosition;
     [SerializeField] private int keysFound = 0;
     [SerializeField] private int keysNumber = 3;
+    [SerializeField] private AudioClip coinSound;
+    [SerializeField] private AudioClip enemySound;
+    [SerializeField] private AudioClip keySound;
+    [SerializeField] private AudioClip healthLostSound;
+    [SerializeField] private AudioClip healthGainedSound;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private List<AudioClip> stepSounds;
 
     private Vector3 pausePosition;
 
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
-
         animator = GetComponent<Animator>();
-
         startPosition = transform.position;
+        source = GetComponent<AudioSource>();
     }
 
     private bool IsGrounded()
@@ -61,6 +58,15 @@ public class NewBehaviourScript : MonoBehaviour
             transform.position = pausePosition;
             animator.speed = 0;
         }
+    }
+    
+    private IEnumerator WaitForStep()
+    {
+        var rnd = Random.Range(0, stepSounds.Count);
+        var stepSound = stepSounds[rnd];
+        source.PlayOneShot(stepSound,AudioListener.volume);
+        yield return new WaitForSeconds(0.333f);
+        playStep = true;
     }
 
     private void UpdateInternal()
@@ -86,14 +92,23 @@ public class NewBehaviourScript : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) Jump();
 
+        if ( IsGrounded() && isWalking && playStep)
+        {
+            playStep = false;
+            StartCoroutine(WaitForStep());
+        }
+        
         animator.SetBool("isGrounded", IsGrounded());
-
         animator.SetBool("isWalking", isWalking);
     }
 
     private void Jump()
     {
-        if (IsGrounded()) rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        if (IsGrounded())
+        {
+            source.PlayOneShot(jumpSound,AudioListener.volume);
+            rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
     }
 
     private void Flip()
@@ -108,30 +123,30 @@ public class NewBehaviourScript : MonoBehaviour
     {
         if (other.CompareTag("Bonus"))
         {
-            score++;
-            GameManager.Instance.AddPoints(1);
+            GameManager.Instance.AddPoints(10);
             other.gameObject.SetActive(false);
+            source.PlayOneShot(coinSound,AudioListener.volume);
         }
 
         if (other.gameObject.CompareTag("Enemy"))
         {
             if (transform.position.y > other.gameObject.transform.position.y)
             {
-                score += 10;
-                Debug.Log("Killed an enemy");
+                GameManager.Instance.AddPoints(20);
                 rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                source.PlayOneShot(enemySound,AudioListener.volume);
+
             }
             else
             {
                 lives--;
+                source.PlayOneShot(healthLostSound,AudioListener.volume);
                 GameManager.Instance.RemoveHeart();
                 if (lives <= 0)
                 {
-                    Debug.Log("Game over");
                 }
                 else
                 {
-                    Debug.Log("Lives left: " + lives);
                     transform.position = new Vector3(0, 0, 0);
                 }
             }
@@ -139,6 +154,8 @@ public class NewBehaviourScript : MonoBehaviour
 
         if (other.gameObject.CompareTag("Key"))
         {
+            source.PlayOneShot(keySound,AudioListener.volume);
+            GameManager.Instance.AddPoints(100);
             keysFound++;
             GameManager.Instance.AddKeys(1);
             other.gameObject.SetActive(false);
@@ -146,22 +163,21 @@ public class NewBehaviourScript : MonoBehaviour
 
         if (other.CompareTag("Heart"))
         {
+            source.PlayOneShot(healthGainedSound,AudioListener.volume);
             lives++;
             if (lives >= 4)
-            {
                 lives = 3;
-            }
             else
-            {
                 GameManager.Instance.AddHeart();
-            }
             other.gameObject.SetActive(false);
         }
 
-        if (other.gameObject.CompareTag("FallLevel"))
-        {
-            
-        }
+        if (other.gameObject.CompareTag("Finish"))
+            if (keysFound == 3)
+            {
+                GameManager.Instance.AddPoints(lives * 100);
+                GameManager.Instance.LevelCompleted();
+            }
 
         if (other.CompareTag("MovingPlatform")) transform.SetParent(other.transform);
     }
